@@ -8,38 +8,40 @@ window.onload = function()
 
    function set_question()
    {
-      // Todo: Units
+      let question = "";
       let unit = by_id("unit").value;
       drug_index = random_int(0, units[unit - 1] - 1);
       let drug = drugs[drug_index];
-      while(drug.brand.length == 0)
-      {
-         drug_index = random_int(0, units[unit - 1] - 1);
-         drug = drugs[drug_index];
-      }
+      drug_index = random_int(0, units[unit - 1] - 1);
+      drug = drugs[drug_index];
       
-      question_direction = random_int(0, 1);
-      let question = "";
+      if(drug.brand.length == 0)
+      {
+         question_direction = 2;
+      }
+      else
+      {
+         question_direction = random_int(0, 3);
+      }
       switch(question_direction)
       {
          case 3:
          {
-
+            by_id("text_input").style.display = "none";
+            by_id("drop_input").style.display = "block";
+            class_dropdown_fill(drug)
+            let brand = drug.brand[random_int(0, drug.brand.length - 1)] + "";
+            question += "What is a class of " + brand + "?";
          } break;
          case 2:
          {
+            by_id("text_input").style.display = "none";
+            by_id("drop_input").style.display = "block";
+            class_dropdown_fill(drug);
 
-         } break;
-         case 1:
-         {
-            let brand = drug.brand[random_int(0, drug.brand.length - 1)] + "";
-            question += "What is the generic name of " + brand + "?";
-         } break;
-         case 0:
-         {
             if(drug.generic.length > 1)
             {
-               question += "What is the brand name of the combination of ";
+               question += "What is a class of the combination of ";
                for(let i = 0;
                    i < drug.generic.length;
                    ++i)
@@ -57,12 +59,94 @@ window.onload = function()
             }
             else
             {
-               question += "What is the brand name of " + drug.generic[0] + "?";
+               question += "What is a class of " + drug.generic[0] + "?";
+            }
+         } break;
+         case 1:
+         {
+            by_id("text_input").style.display = "block";
+            by_id("drop_input").style.display = "none";
+            let brand = drug.brand[random_int(0, drug.brand.length - 1)] + "";
+            question += "What is the generic name(s) of " + brand + "?";
+         } break;
+         case 0:
+         {
+            by_id("text_input").style.display = "block";
+            by_id("drop_input").style.display = "none";
+            if(drug.generic.length > 1)
+            {
+               question += "What is the brand name(s) of the combination of ";
+               for(let i = 0;
+                   i < drug.generic.length;
+                   ++i)
+               {
+                  if(i == drug.generic.length - 1)
+                  {
+                     question += "and " + drug.generic[i];
+                  }
+                  else
+                  {
+                     question += drug.generic[i] + ", ";
+                  }
+               }
+               question += "?";
+            }
+            else
+            {
+               question += "What is the brand name(s) of " + drug.generic[0] + "?";
             }
          } break;
       }
       by_id("question").innerHTML = question;
 
+      function class_dropdown_fill(drug)
+      {
+         let drug_class = drug.class[random_int(0, drug.class.length - 1)];
+         let placement = random_int(0, 3);
+         let dinput = by_id("drop_input");
+         for(let i = 0;
+             i < 4;
+             ++i)
+         {
+            let class_choice = 0;
+            if(i != placement)
+            {
+               let good = true;
+               do
+               {
+                  class_choice = random_int(0, classes.length - 1);
+                  console.log(class_choice);
+                  good = true;
+                  for(let j = 0;
+                      j < drug.class.length;
+                      ++j)
+                  {
+                     for(let k = 0;
+                         k < j;
+                         ++k)
+                     {
+                        if(class_choice == dinput.options[i].value)
+                        {
+                           good = false;
+                           break
+                        }
+                     }
+                     if(class_choice == drug.class[j])
+                     {
+                        good = false;
+                     }
+                     if(!good) break;
+                  }
+               } while(!good);
+            }
+            else
+            {
+               class_choice = drug_class;
+            }
+            dinput.options[i].value = class_choice;
+            dinput.options[i].innerHTML = classes[class_choice];
+         }
+      }
    }
 
    function update_stats()
@@ -81,8 +165,35 @@ window.onload = function()
       let answers = answer.split(",/;");
       let correct_items = 0;
 
-      if(question_direction == 0) return check_helper(drug.brand);
-      else return check_helper(drug.generic);
+      switch(question_direction)
+      {
+         case 3:
+         case 2:
+         {
+            let drug = drugs[drug_index];
+            let dinput = by_id("drop_input");
+            let correct = false;
+            for(let i = 0;
+                i < 4;
+                ++i)
+            {
+               if(drug.class[i] == dinput.value)
+               {
+                  correct = true;
+                  break;
+               }
+            }
+            return correct;
+         } break;
+         case 1:
+         {
+            return check_helper(drug.generic);
+         } break;
+         case 0:
+         {
+            return check_helper(drug.brand);
+         } break;
+      }
 
       function check_helper(arr)
       {
@@ -103,14 +214,7 @@ window.onload = function()
             }
          }
 
-         if(correct_items == arr.length && answers.length == arr.length)
-         {
-            return true;
-         }
-         else
-         {
-            return false;
-         }
+         return correct_items == arr.length && answers.length == arr.length;
       }
    }
 
@@ -119,13 +223,13 @@ window.onload = function()
       let drug = drugs[drug_index];
       let s = "";
       s += "GENERIC: ";
-      s += array_printer(drug.generic, (x, i) => {return x;});
+      s += array_printer(drug.generic, (x) => {return x;});
       s += "<br>";
       s += "BRAND: ";
-      s += array_printer(drug.brand, (x, i) => {return x;});
+      s += array_printer(drug.brand, (x) => {return x;});
       s += "<br>";
       s += "CLASS: ";
-      s += array_printer(drug.brand, (x, i) => {return classes[i];});
+      s += array_printer(drug.class, (x) => {return classes[x];});
       s += "<br>";
       s += "NOTES: " + drug.facts;
 
@@ -138,7 +242,7 @@ window.onload = function()
              i < arr.length;
              ++i)
          {
-            builder += func(arr[i], i);
+            builder += func(arr[i]);
             if(i != arr.length - 1)
             {
                builder += ", ";
@@ -296,7 +400,7 @@ let drugs =
    {
       generic:["Carvedilol"],
       brand:["Coreg"],
-      class:[5, 33],
+      class:[33],
       facts:[""]
    },
    {
