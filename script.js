@@ -115,7 +115,6 @@ window.onload = function()
                do
                {
                   class_choice = random_int(0, classes.length - 1);
-                  console.log(class_choice);
                   good = true;
                   for(let j = 0;
                       j < drug.class.length;
