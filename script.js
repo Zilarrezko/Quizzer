@@ -1,3 +1,7 @@
+/*
+ * https://www.ptcb.org/
+ */
+
 window.onload = function()
 {
    let correct = 0;
@@ -12,8 +16,6 @@ window.onload = function()
       let unit = by_id("unit").value;
       drug_index = random_int(0, units[unit - 1] - 1);
       let drug = drugs[drug_index];
-      drug_index = random_int(0, units[unit - 1] - 1);
-      drug = drugs[drug_index];
       
       if(drug.brand.length == 0)
       {
@@ -150,12 +152,13 @@ window.onload = function()
 
    function update_stats()
    {
-      let s = "Stats: ";
       if(total != 0)
       {
-         s += (100*correct/total).toPrecision(3) + "%";
+         let perc = (100*correct/total);
+         by_id("accur").value = perc;
+         let s = perc.toFixed(1) + "%";
+         by_id("stats").innerHTML = s;
       }
-      by_id("stats").innerHTML = s;
    }
 
    function evaluate(answer)
@@ -745,7 +748,7 @@ let drugs =
       facts:[""]
    },
    {
-      generic:["Triamcinolone"], // Note: technically should have (intranasal) in it
+      generic:["Triamcinolone"],
       brand:["Nasacort"],
       class:[21],
       facts:[""]
@@ -1189,7 +1192,7 @@ let drugs =
       facts:[""]
    },
    {
-      generic:["Triamcinolone"], // Systemic
+      generic:["Triamcinolone"],
       brand:["Kenalog", "Hexatrione"],
       class:[24],
       facts:[""]
@@ -1499,7 +1502,7 @@ let classes =
    "Bisphosphonate",
    "Activated Vitamin D Analog",
    "Calcium Supplement",
-   "Vitamin D3 Supplement",  // Todo: Is this Just a Vitamin D Supplement? Or specifically should we know Vitamin D3?
+   "Vitamin D3 Supplement",
    "Vitamin D Supplement",
 /*70*/ "Thyroid Supplement",
    "Corticosteroid",
@@ -1508,7 +1511,7 @@ let classes =
    "Iodide",
    "Aromatase Inhibitor",
    "Norepinephrine reuptake inhibitor",
-   "Dopamine reuptake inhibitor",      // Todo: Combine this one with above?
+   "Dopamine reuptake inhibitor",
    "Antimuscarinic",
    "Oral Contraceptive (Estrogen/Progestin Combination)",
 /*80*/ "Non-steroidal anti-inflammatory drug (NSAID)",
