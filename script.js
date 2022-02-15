@@ -221,16 +221,16 @@ window.onload = function()
    {
       let drug = drugs[drug_index];
       let s = "";
-      s += "GENERIC: ";
+      s += "<u>Generic</u>: ";
       s += array_printer(drug.generic, (x) => {return x;});
       s += "<br>";
-      s += "BRAND: ";
+      s += "<u>Brand</u>: ";
       s += array_printer(drug.brand, (x) => {return x;});
       s += "<br>";
-      s += "CLASS: ";
+      s += "<u>Class</u>: ";
       s += array_printer(drug.class, (x) => {return classes[x];});
       s += "<br>";
-      s += "NOTES: " + drug.facts;
+      s += "<u>Notes</u>: " + drug.facts;
 
       by_id("answer").innerHTML = s;
 
