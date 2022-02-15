@@ -478,7 +478,7 @@ let drugs =
       facts:["Available OTC"]
    },
    {
-      generic:["Fluticasone (nasal)"],
+      generic:["Fluticasone (nasal)"], // Todo: Ask about what do to with this
       brand:["Flonase"],
       class:[21],
       facts:[""]
