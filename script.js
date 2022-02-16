@@ -10,13 +10,12 @@ window.onload = function()
    let question_direction = 0;
    let state = 0;
 
-   console.log(drugs.length);
-
    function set_question()
    {
       let question = "";
-      let unit = by_id("unit").value;
-      drug_index = random_int(0, units[unit - 1] - 1);
+      // let unit = by_id("unit").value;
+      // drug_index = random_int(0, units[unit - 1] - 1);
+      drug_index = 59;
       let drug = drugs[drug_index];
       
       if(drug.brand.length == 0)
@@ -165,10 +164,34 @@ window.onload = function()
 
    function evaluate(answer)
    {
+      // Note: More direct version of the javascript's split procedure
+      function splitter(s, p)
+      {
+         let result = [];
+         let start = 0;
+         for(let i = 0;
+             i < s.length;
+             ++i)
+         {
+            for(let j = 0;
+                j < p.length;
+                ++j)
+            {
+               if(s[i] == p[j])
+               {
+                  result.push(s.slice(start, i));
+                  start = i + 1;
+                  break
+               }
+            }
+         }
+         result.push(s.slice(start, s.length));
+         return result;
+      }
+
       let drug = drugs[drug_index];
-      let answers = answer.split(",/;");
-      let correct_items = 0;
-      let correct = false;
+      let answers = splitter(answer, ",/;");
+      let result = 0;
       switch(question_direction)
       {
          case 3:
@@ -182,24 +205,25 @@ window.onload = function()
             {
                if(drug.class[i] == dinput.value)
                {
-                  correct = true;
+                  result = 1;
                }
             }
          } break;
          case 1:
          {
-            correct = check_helper(drug.generic);
+            result = check_helper(drug.generic);
          } break;
          case 0:
          {
-            correct = check_helper(drug.brand);
+            result = check_helper(drug.brand);
          } break;
       }
-      return correct;
+      return result;
 
       function check_helper(arr)
       {
          // Todo: Probably should check answers for uniqueness
+         let correct_items = 0;
          for(let i = 0;
              i < answers.length;
              ++i)
@@ -215,8 +239,11 @@ window.onload = function()
                }
             }
          }
-
-         return correct_items == arr.length && answers.length == arr.length;
+         if(correct_items > arr.length)
+         {
+            console.log("This should never happen!");
+         }
+         return correct_items/arr.length;
       }
    }
 
@@ -263,10 +290,19 @@ window.onload = function()
       {
          let input = by_id("text_input");
          let answer = input.value.toLowerCase();
-         if(evaluate(answer))
+         let correctness = evaluate(answer);
+         if(correctness > 0)
          {
-            correct += 1;
-            by_id("feedback").innerHTML = "Correct";
+            correct += correctness;
+            let feedback = by_id("feedback");
+            if(correctness == 1)
+            {
+               feedback.innerHTML = "Correct";
+            }
+            else
+            {
+               feedback.innerHTML = "Partially Correct " + (100*correctness).toFixed(1) + "%";
+            }
          }
          else
          {
@@ -918,13 +954,13 @@ let drugs =
    },
    {
       generic:["Insulin Regular", "Insulin Isophane (NPH)"],
-      brand:["Novolin 70/30", "Humulin 70/30"], // Todo: This is weird... Ask Josh what these should be?
+      brand:["Novolin 70/30", "Humulin 70/30"],
       class:[44],
       facts:[""]
    },
    {
       generic:["Insulin Regular"],
-      brand:["Humulin R", "Novolin R"], // Todo: This one is weird too
+      brand:["Humulin R", "Novolin R"],
       class:[43],
       facts:[""]
    },
@@ -988,7 +1024,7 @@ let drugs =
       class:[50],
       facts:[""]
    },
-   { // Todo: Anything special we should do for no brands?
+   {
       generic:["Aspirin"],
       brand:[],
       class:[51],
