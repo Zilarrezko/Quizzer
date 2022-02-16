@@ -41,7 +41,10 @@ input
 
 #answer
 {
+	/* Note: We're doing this programmatically so it doesn't start off empty with a border around it.
 	border-width: 1px;
+	*/
+	border-width: 0px;
 	border-color: #A8CED0;
 	border-style: solid;
 	padding: 10px;

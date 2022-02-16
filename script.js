@@ -10,6 +10,8 @@ window.onload = function()
    let question_direction = 0;
    let state = 0;
 
+   console.log(drugs.length);
+
    function set_question()
    {
       let question = "";
@@ -166,7 +168,7 @@ window.onload = function()
       let drug = drugs[drug_index];
       let answers = answer.split(",/;");
       let correct_items = 0;
-
+      let correct = false;
       switch(question_direction)
       {
          case 3:
@@ -174,7 +176,6 @@ window.onload = function()
          {
             let drug = drugs[drug_index];
             let dinput = by_id("drop_input");
-            let correct = false;
             for(let i = 0;
                 i < 4;
                 ++i)
@@ -182,20 +183,19 @@ window.onload = function()
                if(drug.class[i] == dinput.value)
                {
                   correct = true;
-                  break;
                }
             }
-            return correct;
          } break;
          case 1:
          {
-            return check_helper(drug.generic);
+            correct = check_helper(drug.generic);
          } break;
          case 0:
          {
-            return check_helper(drug.brand);
+            correct = check_helper(drug.brand);
          } break;
       }
+      return correct;
 
       function check_helper(arr)
       {
@@ -236,6 +236,7 @@ window.onload = function()
       s += "<u>Notes</u>: " + drug.facts;
 
       by_id("answer").innerHTML = s;
+      by_id("answer").style.borderWidth = "1px";
 
       function array_printer(arr, func)
       {
@@ -304,13 +305,13 @@ window.onload = function()
 
 let units =
 [
-   79,  // unit 1
-   91,  // unit 2
-   112, // unit 3
-   124, // unit 4
-   133, // unit 5
-   150, // unit 6
-   187  // unit 7
+   78,  // unit 1
+   90,  // unit 2
+   111, // unit 3
+   123, // unit 4
+   131, // unit 5
+   147, // unit 6
+   185  // unit 7
 ];
 
 let drugs =
@@ -478,16 +479,10 @@ let drugs =
       facts:["Available OTC"]
    },
    {
-      generic:["Fluticasone (nasal)"], // Todo: Ask about what do to with this
-      brand:["Flonase"],
+      generic:["Fluticasone"],
+      brand:["Flonase", "Flovent", "ArmonAir Digihaler", "Arnuity Ellipta"],
       class:[21],
-      facts:[""]
-   },
-   {
-      generic:["Fluticasone (inhaled)"],
-      brand:["Flovent", "ArmonAir Digihaler", "Arnuity Ellipta"],
-      class:[21],
-      facts:[""]
+      facts:["Flonase = nasal; Flovent, ArmonAir Digihaler, and Arnuity Ellipsta = Inhaled"]
    },
    {
       generic:["Fluticasone", "Salmeterol"],
@@ -749,9 +744,9 @@ let drugs =
    },
    {
       generic:["Triamcinolone"],
-      brand:["Nasacort"],
+      brand:["Nasacort", "Kenalog", "Hexatrione"],
       class:[21],
-      facts:[""]
+      facts:["Nasacort = intranasal; Kenalog and Hexatrione = Systemic"]
    },
    {
       generic:["Triamterene", "Hydrochlorothiazide"],
@@ -823,6 +818,12 @@ let drugs =
       generic:["Indomethacin"],
       brand:["Indocin", "Tivorbex"],
       class:[36],
+      facts:[""]
+   },
+   {
+      generic:["Isosorbide"],
+      brand:["Imdur", "ISMO", "Isordil"],
+      class:[37],
       facts:[""]
    },
    {
@@ -1192,12 +1193,6 @@ let drugs =
       facts:[""]
    },
    {
-      generic:["Triamcinolone"],
-      brand:["Kenalog", "Hexatrione"],
-      class:[24],
-      facts:[""]
-   },
-   {
       generic:["Calcium Carbonate"],
       brand:["Tums"],
       class:[67],
@@ -1264,31 +1259,31 @@ let drugs =
       facts:[""]
    },
    {
-      generic:["Ethinyl Estradiol Levonorgestrel"],
+      generic:["Ethinyl Estradiol", "Levonorgestrel"],
       brand:[],
       class:[79],
       facts:[""]
    },
    {
-      generic:["Ethinyl Estradiol Norethindrone"],
+      generic:["Ethinyl Estradiol", "Norethindrone"],
       brand:[],
       class:[79],
       facts:[""]
    },
    {
-      generic:["Ethinyl Estradiol Norgestimate"],
+      generic:["Ethinyl Estradiol", "Norgestimate"],
       brand:[],
       class:[79],
       facts:[""]
    },
    {
-      generic:["Ethinyl Estradiol Norgestrel"],
+      generic:["Ethinyl Estradiol", "Norgestrel"],
       brand:[],
       class:[79],
       facts:[""]
    },
    {
-      generic:["Ethinyl Estradiol Etonogestrel"],
+      generic:["Ethinyl Estradiol", "Etonogestrel"],
       brand:[],
       class:[79],
       facts:[""]
