@@ -13,9 +13,8 @@ window.onload = function()
    function set_question()
    {
       let question = "";
-      // let unit = by_id("unit").value;
-      // drug_index = random_int(0, units[unit - 1] - 1);
-      drug_index = 59;
+      let unit = by_id("unit").value;
+      drug_index = random_int(0, units[unit - 1] - 1);
       let drug = drugs[drug_index];
       
       if(drug.brand.length == 0)
